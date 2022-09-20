@@ -54,7 +54,7 @@ exports.modifySauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (sauce.userId != req.auth.userId) {
-        res.status(401).json({ message: "not authorized" });
+        res.status(403).json({ message: "not authorized" });
       } else {
         Sauce.updateOne(
           { _id: req.params.id },
@@ -71,7 +71,7 @@ exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((deleteSauce) => {
       if (deleteSauce.userId != req.auth.userId) {
-        res.status(401).JSON({ message: "not authorized" });
+        res.status(403).JSON({ message: "not authorized" });
       } else {
         const filename = deleteSauce.imageUrl.split("/images/")[1];
         fs.unlink("images/${filename}", () => {

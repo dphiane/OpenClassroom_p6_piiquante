@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require("helmet");
 const path = require('path');
-const sauceRoutes = require('./routes/sauce');
-const app = express();
-const userRoutes = require('./routes/user');
 const cors = require('cors');
-const dotenv= require('dotenv').config();
+require('dotenv').config();
 
+const sauceRoutes = require('./routes/sauce');
+const userRoutes = require('./routes/user');
+
+const app = express();
 
 mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.x9mo6th.mongodb.net/?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
@@ -23,6 +25,7 @@ app.use((req, res, next) => {
 
   app.use(express.json());
   app.use(cors());
+  app.use(helmet());
   app.use('/api/auth', userRoutes);
   app.use('/api/sauces', sauceRoutes);
   app.use('/images', express.static(path.join(__dirname, 'images')));
