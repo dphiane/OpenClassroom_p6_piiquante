@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const helmet = require("helmet");
 const path = require('path');
 const cors = require('cors');
+const rateLimit= require('./middleware/rate-limit');
 require('dotenv').config();
 
 const sauceRoutes = require('./routes/sauce');
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
   app.use(express.json());
   app.use(cors());
   app.use(helmet());
+  app.use(rateLimit.limiter)
   app.use('/api/auth', userRoutes);
   app.use('/api/sauces', sauceRoutes);
   app.use('/images', express.static(path.join(__dirname, 'images')));
