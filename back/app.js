@@ -4,7 +4,9 @@ const helmet = require("helmet");
 const path = require('path');
 const cors = require('cors');
 const rateLimit= require('./middleware/rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
+
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
@@ -27,6 +29,7 @@ app.use((req, res, next) => {
   app.use(express.json());
   app.use(cors());
   app.use(helmet());
+  app.use(mongoSanitize());
   app.use(rateLimit.limiter)
   app.use('/api/auth', userRoutes);
   app.use('/api/sauces', sauceRoutes);
