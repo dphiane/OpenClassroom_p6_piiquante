@@ -43,11 +43,11 @@ exports.getOneSauce = (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
   if (req.file) {
     Sauce.findOne({ _id: req.params.id }).then((sauce) => {
-      const fileName = sauce.imageUrl.split('/images/')[1];
+      const fileName = sauce.imageUrl.split("/images/")[1];
       fs.unlink(`images/${fileName}`, (error) => {
         if (error) console.log(error);
         else {
-          console.log('Ancienne image supprimée')
+          console.log("Ancienne image supprimée");
         }
       });
     });
@@ -56,7 +56,7 @@ exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file
     ? {
         ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
           req.file.filename
         }`,
       }
@@ -65,10 +65,9 @@ exports.modifySauce = (req, res, next) => {
     { _id: req.params.id },
     { ...sauceObject, _id: req.params.id }
   )
-    .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
+    .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
     .catch((error) => res.status(404).json({ error }));
 };
-
 
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
@@ -123,9 +122,7 @@ exports.likeSauce = (req, res, next) => {
           if (sauce.usersLiked.includes(req.body.userId)) {
             Sauce.updateOne(
               { _id: req.params.id },
-              { $pull: { usersLiked: req.body.userId },
-                $inc: { likes: -1 } 
-              }
+              { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } }
             )
               .then(() =>
                 res.status(200).json({ message: "annulation j'aime" })
@@ -154,7 +151,7 @@ exports.likeSauce = (req, res, next) => {
         { _id: req.params.id },
         {
           $push: { usersDisliked: req.body.userId },
-          $inc: { dislikes: +1 }
+          $inc: { dislikes: +1 },
         }
       )
         .then(() => {
