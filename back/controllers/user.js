@@ -1,22 +1,29 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+var validator= require('email-validator')
 
 exports.signup = (req, res, next) => {
+
+  if(validator.validate(req.body.email)){
+
   bcrypt
-    .hash(req.body.password, 10)
-    .then((hash) => {
-      const user = new User({
-        email: req.body.email,
-        password: hash,
-      });
-      user
-        .save()
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-        .catch((error) => res.status(400).json({ error }));
-    })
-    .catch((error) => res.status(500).json({ error }));
-};
+  .hash(req.body.password, 10)
+  .then((hash) => {
+    const user = new User({
+      email: req.body.email,
+      password: hash,
+    });
+    user
+      .save()
+      .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+      .catch((error) => res.status(400).json({ error }));
+  })
+  .catch((error) => res.status(500).json({ error }));
+}else{
+ res.status(400).send('Invalid Email');
+}
+}
 
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
