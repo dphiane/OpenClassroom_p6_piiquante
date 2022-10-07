@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const helmet = require("helmet");
+const helmet = require("helmet");// protection des headers
 const path = require('path');
 const cors = require('cors');
-const rateLimit= require('./middleware/rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
+const rateLimit= require('./middleware/rate-limit');// protection brute force
+const mongoSanitize = require('express-mongo-sanitize');// protection injection 
 require('dotenv').config();
 
 

@@ -1,5 +1,6 @@
 const multer = require("multer");
 
+// ajout de la possibilité d'importer des images et modifie le nom pour etre unique
 const MIME_TYPES = {
   "image/jpg": "jpg",
   "image/jpeg": "jpg",

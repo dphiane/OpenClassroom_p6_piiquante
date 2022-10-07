@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 
 const sauceCtrl = require('../controllers/sauce');
-
+// route utilisée pour chaques requêtes avec middleware executé de gauche à droite
 router.get('/', auth, sauceCtrl.getAllSauce);
 router.post('/', auth, multer, sauceCtrl.createSauce);
 router.get('/:id', auth, sauceCtrl.getOneSauce);

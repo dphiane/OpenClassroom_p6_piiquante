@@ -1,14 +1,18 @@
 const Sauce = require("../models/Sauce");
 const fs = require("fs");
 
+//Création sauce: récupère les champs et supprime les espaces du debut et de fin
 exports.createSauce = (req, res, next) => {
-  
   const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject._id;
   delete sauceObject.userId;
 
   const newSauce = new Sauce({
-    ...sauceObject,
+    name: sauceObject.name.trim(),
+    manufacturer: sauceObject.manufacturer.trim(),
+    description: sauceObject.description.trim(),
+    mainPepper: sauceObject.mainPepper.trim(),
+    heat: sauceObject.heat,
     userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
       req.file.filename
@@ -26,10 +30,9 @@ exports.createSauce = (req, res, next) => {
     .catch((error) => {
       res.status(400).json({ error });
     });
-}
+};
 
-
-
+// Récupère une sauce précise
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({
     _id: req.params.id,
@@ -44,36 +47,33 @@ exports.getOneSauce = (req, res, next) => {
     });
 };
 
+//Modifier la sauce et verifie si userdId ok
 exports.modifySauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
-  .then((sauce) => {
+  Sauce.findOne({ _id: req.params.id }).then((sauce) => {
     if (sauce.userId !== req.auth.userId) {
       res.status(403).JSON({ message: "not authorized" });
     }
-
     const filename = sauce.imageUrl.split("/images/")[1];
     fs.unlink(`images/${filename}`, () => {
-
-    const sauceObject = req.file
-      ? {
-          ...JSON.parse(req.body.sauce),
-          imageUrl: `${req.protocol}://${req.get("host")}/images/${
-            req.file.filename
-          }`,
-        }
-      :
-        { ...req.body };
-    Sauce.updateOne(
-      { _id: req.params.id },
-      { ...sauceObject, _id: req.params.id }
-    )
-      .then(() => res.status(200).json({ message: "Sauce mise à jour !" }))
-      .catch((error) => res.status(400).json({ error }));
+      const sauceObject = req.file
+        ? {
+            ...JSON.parse(req.body.sauce),
+            imageUrl: `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`,
+          }
+        : { ...req.body };
+      Sauce.updateOne(
+        { _id: req.params.id },
+        { ...sauceObject, _id: req.params.id }
+      )
+        .then(() => res.status(200).json({ message: "Sauce mise à jour !" }))
+        .catch((error) => res.status(400).json({ error }));
     });
-});
+  });
 };
 
-
+// supprime la sauce et verifie userdId de la sauce si ok
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((deleteSauce) => {
@@ -95,6 +95,7 @@ exports.deleteSauce = (req, res, next) => {
     });
 };
 
+// récupère toute les sauces a afficher
 exports.getAllSauce = (req, res, next) => {
   Sauce.find()
     .then((sauces) => {
@@ -107,6 +108,7 @@ exports.getAllSauce = (req, res, next) => {
     });
 };
 
+// fonction de like et dislike de la sauce
 exports.likeSauce = (req, res, next) => {
   switch (req.body.like) {
     case 1:

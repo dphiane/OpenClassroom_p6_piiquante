@@ -3,6 +3,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 var validator= require('email-validator')
 
+//créer un compte et check email, hash le mot de passe
 exports.signup = (req, res, next) => {
 
   if(validator.validate(req.body.email)){
@@ -25,6 +26,7 @@ exports.signup = (req, res, next) => {
 }
 }
 
+// fonction se connecter et chiffre un nouveau token de 24h
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
